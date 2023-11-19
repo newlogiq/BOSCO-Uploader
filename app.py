@@ -36,7 +36,6 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(text_chunks, pdf_name):
-    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     meta = [{'filename' : pdf_name} for _ in range(len(text_chunks))]
     vectorstore = Pinecone.from_texts(text_chunks, embeddings, index_name=index_name, metadatas=meta)
     return vectorstore
@@ -47,18 +46,19 @@ def main():
     st.header("Upload Files :outbox_tray:")
     # st.subheader("Your documents")
     pdf_docs = st.file_uploader(
-        "Upload your PDFs here and click on 'Process'", accept_multiple_files=False, type='pdf')
+        "Upload your PDFs here and click on 'Process'", accept_multiple_files=True, type='pdf')
 
     if st.button("Process"):
         with st.spinner("Processing"):
-            # get pdf text
-            raw_text = get_pdf_text(pdf_docs)
-
-            # get the text chunks
-            text_chunks = get_text_chunks(raw_text)
-
-            # create vector store
-            vectorstore = get_vectorstore(text_chunks, pdf_docs.name)
+            for pdf in pdf_docs:
+                # get pdf text
+                raw_text = get_pdf_text(pdf)
+    
+                # get the text chunks
+                text_chunks = get_text_chunks(raw_text)
+    
+                # create vector store
+                vectorstore = get_vectorstore(text_chunks, pdf.name)
 
         st.write('Upload complete.')
     
