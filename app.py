@@ -9,7 +9,7 @@ from langchain.vectorstores import Pinecone
 # Initialize Pinecone
 PINECONE_API_KEY = st.secrets['PINECONE_API_KEY']
 PINECONE_API_ENV = "gcp-starter"
-index_name = "testing"
+index_name = "mti"
 
 pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
 
@@ -36,8 +36,9 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(text_chunks, pdf_name):
+    text = f'{pdf_name}: {text_chunks}'
     meta = [{'filename' : pdf_name} for _ in range(len(text_chunks))]
-    vectorstore = Pinecone.from_texts(text_chunks, embeddings, index_name=index_name, metadatas=meta)
+    vectorstore = Pinecone.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
     return vectorstore
 
 
