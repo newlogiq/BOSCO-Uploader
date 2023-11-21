@@ -36,7 +36,7 @@ def get_text_chunks(text):
 
 
 def get_vectorstore(text_chunks, pdf_name):
-    text = f'{pdf_name}: {text_chunks}'
+    text = [f'{pdf_name}: {chunk}' for chunk in text_chunks]
     meta = [{'filename' : pdf_name} for _ in range(len(text_chunks))]
     vectorstore = Pinecone.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
     return vectorstore
