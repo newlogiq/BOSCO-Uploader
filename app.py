@@ -4,6 +4,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from PyPDF2 import PdfReader
 from langchain.vectorstores import Pinecone
+import hmac
+
 
 # Authentication:
 def check_password():
