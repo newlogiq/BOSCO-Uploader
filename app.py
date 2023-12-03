@@ -54,8 +54,8 @@ if not check_password():
 
 # Initialize Pinecone
 PINECONE_API_KEY = st.secrets['PINECONE_API_KEY']
-PINECONE_API_ENV = "gcp-starter"
-index_name = "mti"
+PINECONE_API_ENV = "us-east4-gcp"
+index_name = "bosco3000"
 
 pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
 
