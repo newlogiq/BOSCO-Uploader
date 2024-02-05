@@ -59,6 +59,7 @@ index_name = st.secrets['INDEX_NAME']
 
 # pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
 pc = Pinecone(api_key=PINECONE_API_KEY)
+index = pc.Index("quickstart")
 
 # Initilize OpenAI
 OPENAI_API_KEY = st.secrets['OPENAI_API_KEY']
@@ -85,7 +86,7 @@ def get_text_chunks(text):
 def get_vectorstore(text_chunks, pdf_name):
     text = [f'{pdf_name}: {chunk}' for chunk in text_chunks]
     meta = [{'filename' : pdf_name} for _ in range(len(text_chunks))]
-    vectorstore = LcPc.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
+    vectorstore = Pinecone.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
     return vectorstore
 
 
