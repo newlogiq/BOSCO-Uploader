@@ -1,10 +1,10 @@
 import streamlit as st
 from pinecone import Pinecone
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from PyPDF2 import PdfReader
 from langchain_community.vectorstores import Pinecone as LcPc
-import hmac
+
 
 
 # Authentication:
@@ -52,17 +52,21 @@ if not check_password():
     st.stop()
 
 
-# Initialize Pinecone
+
+# Variables
+OPENAI_API_KEY = st.secrets['OPENAI_API_KEY']
 PINECONE_API_KEY = st.secrets['PINECONE_API_KEY']
 PINECONE_API_ENV = st.secrets['ENVIRONMENT']
 index_name = st.secrets['INDEX_NAME']
+index_host = st.secrets['HOST']
 
+
+# Initialize Pinecone
 # pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_API_ENV)
 pc = Pinecone(api_key=PINECONE_API_KEY)
-index = pc.Index("quickstart")
+index = pc.Index(host=index_host)
 
 # Initilize OpenAI
-OPENAI_API_KEY = st.secrets['OPENAI_API_KEY']
 embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
 
 
@@ -86,7 +90,7 @@ def get_text_chunks(text):
 def get_vectorstore(text_chunks, pdf_name):
     text = [f'{pdf_name}: {chunk}' for chunk in text_chunks]
     meta = [{'filename' : pdf_name} for _ in range(len(text_chunks))]
-    vectorstore = Pinecone.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
+    vectorstore = LcPc.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
     return vectorstore
 
 
@@ -114,3 +118,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
