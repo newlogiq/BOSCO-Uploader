@@ -88,16 +88,19 @@ def get_text_chunks(text):
     return chunks
 
 
-def get_vectorstore(text_chunks, pdf_name):
+def get_vectorstore(text_chunks, pdf_name, namespace):
     text = [f'{pdf_name}: {chunk}' for chunk in text_chunks]
     meta = [{'filename' : pdf_name} for _ in range(len(text_chunks))]
-    vectorstore = LcPc.from_texts(text, embeddings, index_name=index_name, metadatas=meta)
+    vectorstore = LcPc.from_texts(text, embeddings, index_name=index_name, namespace=namespace, metadatas=meta)
     return vectorstore
 
 
 def main():
     st.set_page_config(page_title="Upload Files", page_icon=":outbox_tray:")
     st.header("Upload Files :outbox_tray:")
+
+    namespace = st.text_input("Enter the Vector Database Namespace", value="ME")
+    
     # st.subheader("Your documents")
     pdf_docs = st.file_uploader(
         "Upload your PDFs here and click on 'Process'", accept_multiple_files=True, type='pdf')
@@ -112,7 +115,7 @@ def main():
                 text_chunks = get_text_chunks(raw_text)
     
                 # create vector store
-                vectorstore = get_vectorstore(text_chunks, pdf.name)
+                vectorstore = get_vectorstore(text_chunks, pdf.name, namespace)
 
         st.write('Upload complete.')
     
